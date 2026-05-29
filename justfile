@@ -1,5 +1,9 @@
 arch := "x86_64"
 
+qemu_bin := "qemu-system-" + arch
+efi_boot  := if arch == "x86_64" { "BOOTX64.EFI" } \
+        else { error("unsupported architecture: " + arch) }
+
 build:
     zig build -Darch={{arch}} --prefix build
 
@@ -11,7 +15,7 @@ iso: build
     cp /usr/share/limine/limine-bios.sys     build/iso/boot/limine/
     cp /usr/share/limine/limine-bios-cd.bin  build/iso/boot/limine/
     cp /usr/share/limine/limine-uefi-cd.bin  build/iso/boot/limine/
-    cp /usr/share/limine/BOOTX64.EFI         build/iso/EFI/BOOT/
+    cp /usr/share/limine/{{efi_boot}}         build/iso/EFI/BOOT/
     xorriso -as mkisofs \
         -b boot/limine/limine-bios-cd.bin \
         -no-emul-boot -boot-load-size 4 -boot-info-table \
@@ -21,7 +25,7 @@ iso: build
     limine bios-install build/floral-k.iso
 
 run: iso
-    qemu-system-x86_64 \
+    {{qemu_bin}} \
         -M q35 \
         -m 128M \
         -cdrom build/floral-k.iso \

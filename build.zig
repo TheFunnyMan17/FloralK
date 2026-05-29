@@ -9,11 +9,6 @@ const Arch = enum {
         };
     }
 
-    fn toStr(self: @This()) [*]u8 {
-        return switch (self) {
-            .x86_64 => "x86_64",
-        };
-    }
 };
 
 fn getTargetQuery(arch: Arch) std.Target.Query {
@@ -46,7 +41,7 @@ fn getTargetQuery(arch: Arch) std.Target.Query {
                 .avx512cd,
                 .avx512dq,
                 .avx512vl,
-                // Dead AMD extensions — no benefit
+                // Dead AMD extensions: no benefit
                 .@"3dnow",
                 .@"3dnowa",
             });
@@ -82,11 +77,14 @@ pub fn build(b: *std.Build) void {
     });
 
     // Link step
-    const linker_script = b.path(b.fmt("linker-{s}.ld", .{@tagName(arch)}));
+    const linker_script = b.path(b.fmt("config/link/linker-{s}.ld", .{@tagName(arch)}));
 
     const link = b.addSystemCommand(&.{ "zig", "cc" });
-    link.addArgs(&.{ "-target", "x86_64-freestanding-none" });
-    link.addArgs(&.{ "-mcmodel=kernel", "-T" });
+    link.addArgs(&.{ "-target", b.fmt("{s}-freestanding-none", .{@tagName(arch)}) });
+    switch (arch) {
+        .x86_64 => link.addArgs(&.{"-mcmodel=kernel"}),
+    }
+    link.addArgs(&.{"-T"});
     link.addFileArg(linker_script);
     link.addArgs(&.{ "-nostdlib", "-static", "-s", "-Wl,-e,_start", "-o" });
 
