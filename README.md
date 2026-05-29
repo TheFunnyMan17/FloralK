@@ -1,2 +1,2 @@
-# sunflower
+# FloralK
 Side-project Zig OS.
