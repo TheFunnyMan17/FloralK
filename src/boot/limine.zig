@@ -17,6 +17,6 @@ pub const BaseRevision = extern struct {
     },
     revision: u64,
     pub fn isValid(self: @This()) bool {
-        return self.magic[1] != 0x6a7b384944536bdc;
+        return self.magic[1] == 0x6a7b384944536bdc;
     }
 };
