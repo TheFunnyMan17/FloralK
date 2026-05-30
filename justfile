@@ -11,7 +11,7 @@ iso: build
     rm -rf build/iso
     mkdir -p build/iso/boot/limine build/iso/EFI/BOOT
     cp build/bin/floral-k             build/iso/boot/floral-k
-    cp limine.conf                    build/iso/boot/limine/limine.conf
+    cp config/limine.conf                    build/iso/boot/limine/limine.conf
     cp /usr/share/limine/limine-bios.sys     build/iso/boot/limine/
     cp /usr/share/limine/limine-bios-cd.bin  build/iso/boot/limine/
     cp /usr/share/limine/limine-uefi-cd.bin  build/iso/boot/limine/
