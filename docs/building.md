@@ -12,7 +12,6 @@ Currently only the x86_64 architecture is supported.
 - xorriso
 - QEMU
 
-
 ## Commands
 
 | Command | Effect |
